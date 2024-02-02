@@ -1,0 +1,18 @@
+<h1>Product Add</h1>
+<form action="/category-create/" method="get">
+    {% csrf_token %}
+    name
+    <input type="text" name="title" id=""> <br>
+    price
+    <input type="number" name="price" id=""><br>
+    description <br>
+    <textarea name="description" id="" cols="30" rows="10"></textarea><br><br>
+    sub category
+    <select name="sub_category_id" id="">
+        {% for sub_category in sub_categories %}
+            <option value="{{sub_category.id }}">{{ sub_category.name }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <input type="submit" id="">
+</form>

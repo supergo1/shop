@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+    <script>
+        {% if messages %}
+            {% for message in messages %}
+                alert("{{ message }}")
+            {% endfor %}
+        {% endif %}
+    </script>
+    <div class="main">
+      <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="">Store</a></li>
+            <li class="active">My Account Page</li>
+        </ul>
+        <!-- BEGIN SIDEBAR & CONTENT -->
+        <div class="row margin-bottom-40">
+          <!-- BEGIN CONTENT -->
+          <div class="col-md-9 col-sm-7">
+
+            <h1>My Account Page</h1>
+              <div class="content-page">
+                  <h3>Personal info</h3>
+                  <form action="{% url 'profile' %}?action=personal" method="post">
+                      {% csrf_token %}
+                      <ul style="list-style: none">
+                          <li>
+                              <label for="first-name">
+                                  First name: <br>
+                                  <input name="first-name" type="text" id="first-name" value="{{ request.user.first_name }}">
+                              </label>
+                          </li>
+                          <li>
+                              <label for="last-name">
+                                  Last name: <br>
+                                  <input name="last-name" type="text" id="last-name" value="{{ request.user.last_name }}">
+                              </label>
+                          </li>
+                          <li>
+                              <label for="phone">
+                                  Phone: <br>
+                                  <input name="phone" type="text" id="phone" value="{{ request.user.phone }}">
+                              </label>
+                          </li>
+                          <li>
+                              <button type="submit">Update</button>
+                          </li>
+                      </ul>
+                  </form>
+                  <hr>
+
+                  <h3>Account info</h3>
+                  <form action="{% url 'profile' %}?action=account" method="post">
+                      {% csrf_token %}
+                      <ul style="list-style: none">
+                          <li>
+                              <label for="username">
+                                  Username: <br>
+                                  <input name="username" type="text" id="username" value="{{ request.user.username }}">
+                              </label>
+                          </li>
+                          <li>
+                              <label for="mail">
+                                  Email: <br>
+                                  <input name="email" type="email" id="mail" value="{{ request.user.email }}">
+                              </label>
+                          </li>
+                          <li>
+                              <label for="password">
+                                  New Password: <br>
+                                  <input name="password" type="password" id="password">
+                              </label>
+                          </li>
+                          <li>
+                              <button type="submit">
+                                  Update
+                              </button>
+                          </li>
+                      </ul>
+                  </form>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

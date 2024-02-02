@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="main">
+      <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="">Store</a></li>
+            <li class="active">My Wish List</li>
+        </ul>
+        <!-- BEGIN SIDEBAR & CONTENT -->
+        <div class="row margin-bottom-40">
+          <!-- BEGIN CONTENT -->
+          <div class="col-md-9 col-sm-7">
+            <h1>My Wish List</h1>
+            <div class="goods-page">
+              <div class="goods-data clearfix">
+                <div class="table-wrapper-responsive">
+                <table summary="Shopping cart">
+                  <tr>
+                    <th class="goods-page-image">Image</th>
+                    <th class="goods-page-description">Description</th>
+                    <th class="goods-page-stock">Stock</th>
+                    <th class="goods-page-price" colspan="2">Unit price</th>
+                  </tr>
+                  {% for i in likes %}
+                  <tr>
+                    <td class="goods-page-image">
+                      <a href="javascript:;"><img src="{{ i.product.image.first.image.url }}" alt="Berry Lace Dress"></a>
+                    </td>
+                    <td class="goods-page-description">
+                      <h3><a href="{% url 'product-item' i.product.id %}">{{ i.product.title }}</a></h3>
+                      {% if not i.product.quantity.all %}
+                      <p>Not available<strong></strong >None</p>
+                      {% else %}
+                      <p>
+                        Color;
+                        {% for j in i.product.quantity.all %}
+                        <strong>{{ j.color }}</strong>
+                        {% endfor %}
+                        Size;
+                        {% for j in i.product.quantity.all %}
+                        <strong>{{ j.size }}</strong>
+                        {% endfor %}
+                      </p>
+                      {% endif %}
+                    </td>
+                    <td class="goods-page-stock">
+                      {{ i.quantity }}
+                    </td>
+                    <td class="goods-page-price">
+                      <strong><span>$</span>{{ i.product.price }}</strong>
+                    </td>
+                    <td class="del-goods-col">
+                      <a class="del-goods" href="{% url 'wishlist' %}?like_id={{ i.id }}"></a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- END CONTENT -->
+        </div>
+        <!-- END SIDEBAR & CONTENT -->
+      </div>
+    </div>
+{% endblock %}

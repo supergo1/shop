@@ -1,0 +1,23 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LOGIN</title>
+    <link type="text/css" href='{% static "corporate/pages/css/custom.css" %}' rel="stylesheet">
+</head>
+<body>
+    <div class="logindiv">
+        <form action="{% url 'login' %}" method="post" class="formlogin">
+            {% csrf_token %}
+                <label for="login">Username</label>
+                <input type="text" name="username" id="login" placeholder="Type your username" required>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Type your password" required>
+            <button class="loginbutton" type="submit">LOGIN</button>
+        </form>
+        <a href="{% url 'sign-up' %}">Sign up</a>
+    </div>
+</body>
+</html>

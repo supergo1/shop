@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="main">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="">Store</a></li>
+                <li class="active">Cool green dress with red bell</li>
+            </ul>
+            <div class="row margin-bottom-40">
+                <div class="sidebar col-md-3 col-sm-5">
+                    <ul class="list-group margin-bottom-25 sidebar-menu">
+                        {% for sub_category in sub_categories %}
+                        <li class="list-group-item clearfix">
+                            <a href="shop-product-list.html">
+                                <i class="fa fa-angle-right"></i>q
+                                {{ sub_category.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="sidebar-products clearfix">
+                        <h2>Bestsellers</h2>
+                        {% for i in best_seller %}
+                        <div class="item">
+                            <a href="{% url 'product-item' i.id %}"><img src="{{ i.image.first.image.url }}"
+                                                          alt="Some Shoes in Animal with Cut Out"></a>
+                            <h3><a href="{% url 'product-item' i.id %}">{{ i.title }}</a></h3>
+                            {% if i.sale_price is not None %}
+                            <div class="price">${{ i.sale_price }}</div>
+                        {% else %}
+                        <div class="price">${{ i.price }}</div>
+                        {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- END SIDEBAR -->
+
+                <!-- BEGIN CONTENT -->
+                <div class="col-md-9 col-sm-7">
+                    <div class="product-page">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="product-main-image" style="position: relative; overflow: hidden;">
+                                    <img src="{{ product.image.first.image.url }}" alt="Cool green dress with red bell"
+                                         class="img-responsive" data-bigimgsrc="{{ product.image.first.image.url }}">
+                                    <img src="{{ product.image.first.image.url }}" class="zoomImg"
+                                         style="position: absolute; top: -39.6802px; left: -209.725px; opacity: 0; width: 600px; height: 800px; border: none; max-width: none;">
+                                </div>
+                                <div class="product-other-images">
+                                    {% for image in product.image.all %}
+                                    <a href="{{ image.image.url }}" class="fancybox-button"
+                                       rel="photos-lib"><img alt="Berry Lace Dress"
+                                                             src="{{ image.image.url }}"></a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <h1>{{ product.title }}</h1>
+                                <div class="price-availability-block clearfix">
+                                    <div class="price">
+                                        {% if product.sale_price is not None %}
+                                        <strong><span>$</span>{{ product.sale_price }}</strong>
+                                        <em>$<span>{{ product.price }}</span></em>
+                                        {% else %}
+                                            <strong><span>$</span>{{ product.price }}</strong>
+                                        {% endif %}
+                                    </div>
+                                    <div class="availability">
+                                        Availability:
+                                        {% if product.quantity.all %}
+                                        <strong>Yes</strong>
+                                        {% else %}
+                                            <strong>No</strong>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="description">
+                                    <p>{{ product.description }}</p>
+                                </div>
+                                <form action="{% url 'cart' product.id %}">
+                                    <div class="product-page-options">
+                                        <div class="pull-left">
+                                            <label class="control-label">Size:</label>
+                                            <select class="form-control input-sm">
+                                                {% for i in product.quantity.all %}
+                                                    <option value="{{ i.id }}">{{ i.get_size_display }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="pull-left">
+                                            <label class="control-label">Color:</label>
+                                            <select class="form-control input-sm">
+                                                {% for i in product.quantity.all %}
+                                                    <option value="{{ i.id }}">{{ i.color }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="product-page-cart">
+                                        <div class="product-quantity">
+                                            <div class="input-group bootstrap-touchspin input-group-sm"><span
+                                                    class="input-group-btn"><button
+                                                    class="btn quantity-down bootstrap-touchspin-down" type="button"><i
+                                                    class="fa fa-angle-down"></i></button></span><span
+                                                    class="input-group-addon bootstrap-touchspin-prefix"
+                                                    style="display: none;"></span><input name="quantity" id="product-quantity" type="text"
+                                                                                        value="1"
+                                                                                        class="form-control input-sm"
+                                                                                        style="display: block;"><span
+                                                    class="input-group-addon bootstrap-touchspin-postfix"
+                                                    style="display: none;"></span><span class="input-group-btn"><button
+                                                    class="btn quantity-up bootstrap-touchspin-up" type="button"><i
+                                                    class="fa fa-angle-up"></i></button></span></div>
+                                        </div>
+                                        <a class="btn btn-primary" href="{% url 'cart' product.id %}?action=addtocart">Add to Cart</a>
+                                        {% if not like %}
+                                        <a style="color: red; margin-left: 50px" href="{% url 'product-item' product.id %}?action=like">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                            </svg>
+                                        </a>
+                                        {% else %}
+                                        <a style="color: red; margin-left: 50px" href="{% url 'product-item' product.id %}?action=dislike">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd"
+                                                    d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                            </svg>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="product-page-content">
+                                <ul id="myTab" class="nav nav-tabs">
+                                    <li><a href="#Description" data-toggle="tab">Description</a></li>
+                                    <li><a href="#Information" data-toggle="tab">Information</a></li>
+                                    <li class="active"><a href="#Reviews" data-toggle="tab">Reviews (2)</a></li>
+                                </ul>
+                                <div id="myTabContent" class="tab-content">
+                                    <div class="tab-pane fade" id="Description">
+                                        <p>{{ product.description }}</p>
+                                    </div>
+                                    <div class="tab-pane fade" id="Information">
+                                        <table class="datasheet">
+                                            <tr>
+                                                <th colspan="2">Additional features</th>
+                                            </tr>
+                                            {% for i in product.quantity.all %}
+                                                <tr>
+                                                    <td class="datasheet-features-type">{{ i.get_size_display }}</td>
+                                                    <td>{{ i.color }}</td>
+                                                <td>{{ i.quantity }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+                                    <div class="tab-pane fade in active" id="Reviews">
+                                        <!--<p>There are no reviews for this product.</p>-->
+                                        {% for review in product.reviews.all %}
+                                        <div class="review-item clearfix">
+                                            <div class="review-item-submitted">
+                                                <strong>{{ review.user.get_full_name }}</strong>
+                                                <em>{{ review.created_at }}</em>
+                                                <div class="rateit" data-rateit-value="5" data-rateit-ispreset="true"
+                                                     data-rateit-readonly="true">
+                                                    <button id="rateit-reset-3" data-role="none" class="rateit-reset"
+                                                            aria-label="reset rating" aria-controls="rateit-range-3"
+                                                            style="display: none;"></button>
+                                                    <div id="rateit-range-3" class="rateit-range" tabindex="0"
+                                                         role="slider" aria-label="rating" aria-owns="rateit-reset-3"
+                                                         aria-valuemin="0" aria-valuemax="5" aria-valuenow="5"
+                                                         aria-readonly="true" style="width: 80px; height: 16px;">
+                                                        <div class="rateit-selected rateit-preset"
+                                                             style="height: 16px; width: 80px;"></div>
+                                                        <div class="rateit-hover" style="height:16px"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="review-item-content">
+                                                <p>{{ review.comment }}</p>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                        <!-- BEGIN FORM-->
+                                        <form action="#" class="reviews-form" role="form">
+                                            {% csrf_token %}
+                                            <h2>Write a review</h2>
+                                            <div class="form-group">
+                                                <label for="review" name="reviewnew">Review <span class="require">*</span></label>
+                                                <textarea class="form-control" rows="8" id="review"></textarea>
+                                            </div>
+                                            <div class="container" style="position: relative;top: 50%;left: 50%;width: 40%;height: 20%;transform: translate(-50%, -50%) rotateY(180deg);">
+                                                <div class="container__items" style="display: flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                
+                                                gap: 0 .5em;
+                                                
+                                                width: 100%;
+                                                height: 100%;">
+                                                  <input type="radio" name="stars" id="st5" style="display: none;">
+                                                  <label for="st5" style="width: 20%;aspect-ratio: 1;cursor: pointer;">
+                                                    <div class="star-stroke" style="display: grid;place-items: center;width: 100%;height: 100%;background: var(--secondary-colour);clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
+                                                      <div class="star-fill" style=" width: 70%; aspect-ratio: 1; background: var(--primary-colour); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);"></div>
+                                                    </div>
+                                                    <div class="label-description" data-content="Excellent"></div>
+                                                  </label>
+                                                  <input type="radio" name="stars" id="st4" style="display: none;">
+                                                  <label for="st4" style="width: 20%;aspect-ratio: 1;cursor: pointer;">
+                                                    <div class="star-stroke" style="display: grid;place-items: center;width: 100%;height: 100%;background: var(--secondary-colour);clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
+                                                      <div class="star-fill" style=" width: 70%; aspect-ratio: 1; background: var(--primary-colour); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);"></div>
+                                                    </div>
+                                                    <div class="label-description" data-content="Good"></div>
+                                                  </label>
+                                                  <input type="radio" name="stars" id="st3" style="display: none;">
+                                                  <label for="st3" style="width: 20%;aspect-ratio: 1;cursor: pointer;">
+                                                    <div class="star-stroke" style="display: grid;place-items: center;width: 100%;height: 100%;background: var(--secondary-colour);clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
+                                                      <div class="star-fill" style=" width: 70%; aspect-ratio: 1; background: var(--primary-colour); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);"></div>
+                                                    </div>
+                                                    <div class="label-description" data-content="OK"></div>
+                                                  </label>
+                                                  <input type="radio" name="stars" id="st2" style="display: none;">
+                                                  <label for="st2" style="width: 20%;aspect-ratio: 1;cursor: pointer;">
+                                                    <div class="star-stroke" style="display: grid;place-items: center;width: 100%;height: 100%;background: var(--secondary-colour);clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
+                                                      <div class="star-fill" style=" width: 70%; aspect-ratio: 1; background: var(--primary-colour); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);"></div>
+                                                    </div>
+                                                    <div class="label-description" data-content="Bad"></div>
+                                                  </label>
+                                                  <input type="radio" name="stars" id="st1" style="display: none;">
+                                                  <label for="st1" style="width: 20%;aspect-ratio: 1;cursor: pointer;">
+                                                    <div class="star-stroke" style="display: grid;place-items: center;width: 100%;height: 100%;background: var(--secondary-colour);clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
+                                                      <div class="star-fill" style=" width: 70%; aspect-ratio: 1; background: var(--primary-colour); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);"></div>
+                                                    </div>
+                                                    
+                                                    <div class="label-description" data-content="Terrible"></div>
+                                                  </label>
+                                                </div>
+                                            </div>
+                                            <div class="padding-top-20">
+                                                <button type="submit" class="btn btn-primary">Send</button>
+                                            </div>
+                                        </form>
+                                        <!-- END FORM-->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sticker sticker-sale"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+{% endblock %}
